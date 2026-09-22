@@ -8,7 +8,6 @@ DROP TABLE IF EXISTS dim_category CASCADE;
 DROP TABLE IF EXISTS dim_status CASCADE;
 DROP TABLE IF EXISTS etl_run_log CASCADE;
 
--- date dimension, smart key YYYYMM (e.g. 140107)
 CREATE TABLE dim_date (
     date_id      INTEGER     PRIMARY KEY,
     jalali_year  SMALLINT    NOT NULL,
