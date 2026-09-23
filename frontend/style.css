@@ -1,0 +1,181 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: Tahoma, "Segoe UI", sans-serif;
+  background: #f1f5f9;
+  color: #0f172a;
+  line-height: 1.7;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 18px 28px;
+}
+
+header h1 { font-size: 20px; }
+header p { color: #64748b; font-size: 13px; }
+
+.controls { display: flex; align-items: center; gap: 8px; }
+.controls select {
+  font-family: inherit;
+  padding: 8px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 14px;
+  min-width: 140px;
+}
+
+.error-banner {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 12px 20px;
+  margin: 16px 28px 0;
+}
+
+main { padding: 20px 28px 8px; max-width: 1280px; margin: 0 auto; }
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.kpi {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.kpi .label { color: #64748b; font-size: 12.5px; }
+.kpi .value { font-size: 26px; font-weight: bold; }
+.kpi .value.small { font-size: 15px; }
+.kpi .value.good { color: #16a34a; }
+.kpi .value.bad { color: #dc2626; }
+.kpi .value.muted { color: #94a3b8; font-size: 14px; }
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 16px;
+}
+
+.card h2 { font-size: 15px; margin-bottom: 12px; color: #1e293b; }
+
+.card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.card-head h2 { margin-bottom: 0; }
+.card-head select {
+  font-family: inherit;
+  padding: 6px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  min-width: 130px;
+}
+
+.chart-box { position: relative; height: 300px; }
+.chart-box.tall { height: 420px; }
+
+.table-wrap { overflow-x: auto; }
+
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 7px 10px;
+  text-align: center;
+}
+
+th { background: #f8fafc; font-weight: bold; white-space: nowrap; }
+td.city { text-align: right; font-weight: bold; white-space: nowrap; background: #f8fafc; }
+td.total { font-weight: bold; background: #eff6ff; }
+td.light-text { color: #ffffff; }
+
+.etl-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  align-items: center;
+  color: #475569;
+  font-size: 13.5px;
+}
+
+.badge {
+  padding: 3px 12px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: bold;
+}
+.badge.ok { background: #dcfce7; color: #15803d; }
+.badge.bad { background: #fee2e2; color: #b91c1c; }
+
+footer { text-align: center; color: #94a3b8; font-size: 12px; padding: 16px; }
+
+@media (max-width: 900px) {
+  .kpi-grid, .grid-2 { grid-template-columns: 1fr; }
+}
+
+th.sortable { cursor: pointer; user-select: none; }
+th.sortable:hover { background: #e0e7ff; }
+
+.table-hint { color: #94a3b8; font-size: 12px; margin: -4px 0 10px; }
+
+td.clickable { cursor: pointer; }
+td.clickable:hover { outline: 2px solid #2563eb; outline-offset: -2px; }
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  z-index: 50;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 60px 16px;
+  overflow-y: auto;
+}
+.modal.open { display: flex; }
+.modal-card {
+  background: #fff;
+  border-radius: 12px;
+  max-width: 860px;
+  width: 100%;
+  padding: 18px 20px;
+}
+.modal-head { display: flex; justify-content: space-between; align-items: center; }
+.modal-head h3 { font-size: 16px; }
+.modal-head button {
+  border: none;
+  background: #f1f5f9;
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  font-size: 18px;
+  cursor: pointer;
+}

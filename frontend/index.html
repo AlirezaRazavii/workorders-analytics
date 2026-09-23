@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>داشبورد دستورکارهای زخمی</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div>
+      <h1>داشبورد تحلیلی دستورکارهای زخمی</h1>
+      <p>وضعیت دستورکارهای انتقالی از سال‌های گذشته — به تفکیک شهر، دسته و وضعیت</p>
+    </div>
+    <div class="controls">
+      <label for="monthSelect">ماه:</label>
+      <select id="monthSelect"></select>
+    </div>
+  </header>
+
+  <div id="errorBanner" class="error-banner" hidden></div>
+
+  <main>
+    <section class="kpi-grid">
+      <div class="kpi">
+        <span class="label">کل دستورکارهای باز — <span id="kpiPeriod">…</span></span>
+        <span class="value" id="kpiTotal">…</span>
+      </div>
+      <div class="kpi">
+        <span class="label">تغییر نسبت به ماه قبل</span>
+        <span class="value" id="kpiChange">…</span>
+      </div>
+      <div class="kpi">
+        <span class="label">بزرگ‌ترین دسته</span>
+        <span class="value small" id="kpiTopCategory">…</span>
+      </div>
+      <div class="kpi">
+        <span class="label">پرمشغله‌ترین شهر</span>
+        <span class="value small" id="kpiTopCity">…</span>
+      </div>
+    </section>
+
+    <section class="grid-2">
+      <div class="card">
+        <h2>روند کل دستورکارهای باز</h2>
+        <div class="chart-box"><canvas id="trendChart"></canvas></div>
+      </div>
+      <div class="card">
+        <h2>سهم دسته‌ها از دستورکارهای باز</h2>
+        <div class="chart-box"><canvas id="categoryChart"></canvas></div>
+      </div>
+    </section>
+
+    <section class="grid-2">
+      <div class="card">
+        <h2>تفکیک وضعیت دستورکارها</h2>
+        <div class="chart-box"><canvas id="statusChart"></canvas></div>
+      </div>
+      <div class="card">
+        <h2>رتبه‌بندی شهرها</h2>
+        <div class="chart-box tall"><canvas id="cityChart"></canvas></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h2>روند دستورکارهای یک شهر</h2>
+        <select id="citySelect"></select>
+      </div>
+      <div class="chart-box"><canvas id="cityTrendChart"></canvas></div>
+    </section>
+
+    <section class="card">
+      <h2>ماتریس شهر × دسته</h2>
+      <p class="table-hint">برای مرتب‌سازی روی سرستون‌ها کلیک کنید (بیشترین ← کمترین ← ترتیب پیش‌فرض)</p>
+      <div class="table-wrap">
+        <table id="matrixTable"></table>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>ماتریس شهر × وضعیت</h2>
+      <p class="table-hint">تعداد دستورکارهای باز هر شهر در هر مرحله از چرخه پیشرفت</p>
+      <div class="table-wrap">
+        <table id="statusMatrixTable"></table>
+      </div>
+   </section>
+
+    <section class="card">
+      <h2>آخرین اجرای سرویس ETL</h2>
+      <div id="etlInfo" class="etl-info">…</div>
+    </section>
+  </main>
+
+  <footer>
+    منبع داده: فایل 2016.xlsx — مسیر داده: Excel ← PostgreSQL نرمال ← سرویس ETL ← DWH ستاره‌ای ← API
+  </footer>
+
+  <div id="drilldownModal" class="modal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 id="drilldownTitle"></h3>
+        <button id="drilldownClose" type="button">×</button>
+      </div>
+      <p id="drilldownSubtitle" class="table-hint"></p>
+      <div class="table-wrap">
+        <table id="drilldownTable"></table>
+      </div>
+    </div>
+  </div>
+
+  <script src="chart.umd.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
