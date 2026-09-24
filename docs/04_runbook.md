@@ -3,31 +3,47 @@
 ## پیش‌نیازها
 
 - Python 3.12+
-- PostgreSQL (لوکال) یا Docker
-- فایل .env در ریشه (از .env.example کپی و POSTGRES_PASSWORD تنظیم شود)
+- PostgreSQL لوکال یا Docker
+- فایل .env در ریشه پروژه
 
 ## اجرای لوکال
 
+اول محیط را آماده کنید:
+
     python -m venv venv
-    venv\Scripts\activate
+    venv\Scripts\activate        # لینوکس: source venv/bin/activate
     pip install -r requirements.txt
+
+بعد فایل .env را بسازید و پسورد دیتابیس را داخلش بگذارید:
+
+    copy .env.example .env       # لینوکس: cp .env.example .env
+
+این گام را حتما قبل از ادامه انجام دهید، وگرنه خطای اتصال دیتابیس می‌گیرید.
+
+ساخت دیتابیس‌ها و لود داده:
+
     python scripts\init_databases.py
     python scripts\load_excel_to_source.py
     python scripts\etl_source_to_dwh.py
+
+اجرای API:
+
     uvicorn app.main:app --port 8080
 
-داشبورد (پنجره جدا):
+داشبورد در پنجره جدا:
 
     cd frontend
     python -m http.server 5500
 
-آدرس داشبورد: http://127.0.0.1:5500
+آدرس داشبورد http://127.0.0.1:5500 است.
 
 ## تست‌ها
 
     pytest
 
-تست‌های API به دیتابیس dwh وصل می‌شوند؛ PostgreSQL باید در حال اجرا باشد.
+دو نکته: PostgreSQL باید در حال اجرا باشد و داده باید لود شده باشد. یعنی
+اگر دیتابیس تازه ساخته‌اید، اول سه اسکریپت بالا را اجرا کنید بعد pytest،
+وگرنه تست‌های API خطای اتصال یا 404 می‌گیرند.
 
 ## اجرا با Docker
 
@@ -45,4 +61,5 @@
     docker compose down
     docker compose down -v
 
-دستور اول فقط توقف می‌کند (داده‌ها در volume می‌مانند)، دستور دوم داده‌ها را هم حذف می‌کند.
+دستور اول فقط کانتینرها را متوقف می‌کند و داده‌ها در volume می‌مانند.
+دستور دوم داده‌ها را هم پاک می‌کند.
