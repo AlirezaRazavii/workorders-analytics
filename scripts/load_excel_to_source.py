@@ -68,7 +68,7 @@ def parse_groups(raw, status_idx):
         )
 
     groups = []
-    first = 4  # columns 0-3 are city, code, year, month
+    first = 4
     for idx, (col, label) in enumerate(total_cols):
         if label == GRAND_TOTAL_LABEL:
             name = GRAND_TOTAL_LABEL
@@ -88,8 +88,8 @@ def parse_rows(raw, status_idx, groups):
     records = []
     issues = []
     checks = 0
-    monthly_rows = {}  # (year, month) -> monthly aggregate row
-    company_rows = {}  # (year, month) -> company aggregate row
+    monthly_rows = {}
+    company_rows = {}
     period = None
 
     for _, row in raw.iloc[status_idx + 1:].iterrows():
@@ -102,7 +102,6 @@ def parse_rows(raw, status_idx, groups):
             period = (year, month)
         row_period = (year, month) if (year and month) else period
 
-        # aggregate rows are kept aside for validation, not for loading
         if label == MONTHLY_TOTAL_LABEL:
             monthly_rows[row_period] = row
             continue
@@ -112,7 +111,7 @@ def parse_rows(raw, status_idx, groups):
         if not (year and month):
             continue
 
-        excel_row = int(row.name) + 1  # sheet row number, for traceability
+        excel_row = int(row.name) + 1
         group_totals = {}
 
         for g in cat_groups:
@@ -134,7 +133,6 @@ def parse_rows(raw, status_idx, groups):
                 })
             group_totals[g["name"]] = group_sum
 
-            # check 1: statuses of a group sum to the group total column
             checks += 1
             if group_sum != to_int(row[g["total"]]):
                 issues.append(
@@ -142,7 +140,6 @@ def parse_rows(raw, status_idx, groups):
                     f"sum={group_sum} total={to_int(row[g['total']])}"
                 )
 
-        # check 2: sum of all groups equals the grand total column
         checks += 1
         grand_total = to_int(row[grand["total"]])
         if sum(group_totals.values()) != grand_total:
@@ -163,10 +160,8 @@ def parse_rows(raw, status_idx, groups):
 
 
 def validate_aggregates(parsed):
-    # check 3/4: per month, the sum over the 16 cities must match both
-    # aggregate rows of the file. updates checks/issues in place
-    by_cat = {}    # (year, month, category) -> count
-    by_month = {}  # (year, month) -> count
+    by_cat = {}
+    by_month = {}
     for r in parsed["records"]:
         key = (r["year"], r["month"], r["category"])
         by_cat[key] = by_cat.get(key, 0) + r["count"]
@@ -188,8 +183,6 @@ def validate_aggregates(parsed):
         check(year, month, row, parsed["grand"]["total"],
               by_month.get((year, month), 0), "monthly grand")
 
-    # in the company row the values sit in merged cells,
-    # so they are read from the first column of each group
     for (year, month), row in parsed["company_rows"].items():
         for g in parsed["cat_groups"]:
             expected = by_cat.get((year, month, g["name"]), 0)
@@ -210,8 +203,6 @@ def load_to_db(parsed):
 
     engine = create_engine(source_url())
     with engine.begin() as conn:
-        # observation table is fully reloaded; reference tables are
-        # upserted so their ids stay stable across reruns
         conn.execute(text("TRUNCATE TABLE open_work_order RESTART IDENTITY"))
 
         for code, name in cities:

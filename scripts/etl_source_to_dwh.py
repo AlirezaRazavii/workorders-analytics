@@ -1,16 +1,3 @@
-# ETL service: build the star schema in workorders_dwh
-# from the normalized tables in workorders_source.
-#
-#   extract   -> read joined records from the source db
-#   transform -> build dimension rows, map natural keys to surrogate keys
-#   load      -> upsert dimensions, full reload of the fact table
-#   validate  -> compare source and dwh counts and totals
-#
-# Every run is recorded in etl_run_log.
-#
-# Run from the project root:
-#   python scripts\etl_source_to_dwh.py
-
 import sys
 from datetime import datetime
 
@@ -28,7 +15,7 @@ JALALI_MONTHS = {
 SOURCE_NAME = "2016.xlsx"
 
 
-# ---------- run log ----------
+#run log
 
 def start_run(engine):
     with engine.begin() as conn:
@@ -56,7 +43,7 @@ def finish_run(engine, run_id, status, extracted, loaded,
         })
 
 
-# ---------- extract ----------
+#extract
 
 def extract():
     engine = create_engine(source_url())
@@ -74,7 +61,7 @@ def extract():
         return [dict(row) for row in conn.execute(query).mappings()]
 
 
-# ---------- transform ----------
+#transform
 
 def build_dimensions(rows):
     periods = sorted({(r["jalali_year"], r["jalali_month"]) for r in rows})
@@ -106,15 +93,13 @@ def build_dimensions(rows):
     return dim_date, dim_city, dim_category, dim_status
 
 
-# ---------- load ----------
+#load
 
 def load_dwh(rows):
     dim_date, dim_city, dim_category, dim_status = build_dimensions(rows)
     engine = create_engine(dwh_url())
 
     with engine.begin() as conn:
-        # dimensions are upserted so surrogate keys stay stable,
-        # the fact table gets a full reload on every run
         for d in dim_date:
             conn.execute(text(
                 "INSERT INTO dim_date (date_id, jalali_year, jalali_month, "
@@ -150,7 +135,6 @@ def load_dwh(rows):
                 "SET status_order = EXCLUDED.status_order"
             ), s)
 
-        # natural key -> surrogate key maps for the fact insert
         date_keys = {(y, m): did for did, y, m in conn.execute(text(
             "SELECT date_id, jalali_year, jalali_month FROM dim_date"))}
         city_keys = {code: cid for code, cid in conn.execute(text(
@@ -190,7 +174,7 @@ def load_dwh(rows):
     }
 
 
-# ---------- validate ----------
+#validate
 
 def validate():
     src = create_engine(source_url())
