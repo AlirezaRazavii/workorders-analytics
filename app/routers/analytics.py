@@ -8,7 +8,6 @@ router = APIRouter(prefix="/api", tags=["analytics"])
 
 
 def resolve_date_id(conn: Connection, date_id: int | None) -> int:
-    # no date_id given -> fall back to the latest loaded month
     if date_id is None:
         value = conn.execute(text("SELECT MAX(date_id) FROM dim_date")).scalar()
         if value is None:
